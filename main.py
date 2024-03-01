@@ -1,11 +1,11 @@
 import streamlit as st
 import requests
 import subprocess
-from openai import OpenAI
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import load_model
+from streamlit_option_menu import option_menu
 
 # Load the data
 data = pd.read_csv("mumbai.csv")
@@ -36,15 +36,15 @@ def get_weather_data(city,weather_api_key):
    return response.json()
 
 def run_weather_forecast():
-    # Sidebar configuration
-    st.sidebar.title("Weather Forecasting with LLM")
-    city = st.sidebar.text_input("Enter city name", "London")
+    
+    st.title("Weather Forecasting with LLM")
+    city = st.text_input("Enter city name", "London")
 
     # #API Keys
     weather_api_key = "556105f4f5f06239d40c226b2f11b769"
 
     # button to fetch and display weather data
-    submit = st.sidebar.button("Get Weather")
+    submit = st.button("Get Weather")
 
     if submit:
         st.title("Weather Updates for " + city + " is:")
@@ -62,7 +62,7 @@ def run_weather_forecast():
                     st.metric("Pressure 💨", f"{weather_data['main']['pressure']}hPa")
                     st.metric("Wind Speed 🍃", f"{weather_data['wind']['speed']}m/s")
         
-def run_main():
+def run_predictionpage():
     st.title('Predictions for Precipitation in Mumbai')
 
     # dataset
@@ -74,18 +74,49 @@ def run_main():
     index = range(len(data))
     actual_predicted_df = pd.DataFrame({'Actual': y, 'Predicted': predictions.flatten()}, index=index)
     st.line_chart(actual_predicted_df)
-
+      
     # Show a sample of the predictions
     st.write("### Predicted Values")
     st.write(actual_predicted_df.head(100))
+    
+    predictions_df = pd.DataFrame({'Actual': y, 'Predicted': predictions.flatten()})
+    st.write("### Actual vs Predicted Precipitation (Area Chart)")
+    st.area_chart(predictions_df)
+
 
 def run_apps():
-    page = st.sidebar.selectbox("Select a page", ["Weather Forecast", "Precipitation Predictions"])
 
-    if page == "Weather Forecast":
-        run_weather_forecast()
-    elif page == "Precipitation Predictions":
-        run_main()
+   with st.sidebar:
+# Sidebar configuration
+    st.sidebar.title("Main Menu")
 
-# Call the function to run both apps
+# the options
+    options = ["Weather Forecast","Precipitation Predictions"]
+
+# Selectbox for menu 
+    selected = option_menu(
+      menu_title="Select an option",
+      options=options,
+    #   icons=["weather", "rain"],
+      menu_icon="cast",
+      default_index = 0,
+    #   orientation = "horizontal"
+    )
+
+   if selected == "Weather Forecast":
+       run_weather_forecast()
+   elif selected == "Precipitation Predictions":
+           run_predictionpage()
+
+
 run_apps()
+
+
+
+
+
+
+
+
+
+#/home/codespace/.local/lib/python3.10/site-packages/bin/streamlit run demo.py
