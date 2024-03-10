@@ -1,4 +1,5 @@
 import streamlit as st
+import folium
 from rain_prediction import run_predictionpage
 from rain_forecast import run_weather_forecast
 from streamlit_option_menu import option_menu
