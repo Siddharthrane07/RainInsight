@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import load_model
+import requests
 
 # Load the data
 data = pd.read_csv("combined_data.csv")
@@ -54,6 +55,51 @@ def run_predictionpage():
     predictions_df = pd.DataFrame({'Actual': y, 'Predicted': predictions.flatten()})
     st.write("### Actual vs Predicted Precipitation (Area Chart) (Year 2023)")
     st.area_chart(predictions_df)
+    
+    
+    city = st.text_input("Enter the Name of the City")   
+    
+    # #API Keys
+    weather_api_key = "556105f4f5f06239d40c226b2f11b769"
+    # button to fetch and display weather data
+    submit = st.button("Get Weather")
+    if submit:
+        st.title("Prediction for " + city + " is:")
+        with st.spinner('Predicting the weather ...'):
+            weather_data = get_weather_data(city, weather_api_key)
+            st.text(f"{weather_data['main']['temp'] - 273.15:.2f}C")
+            temp = weather_data['main']['temp'] - 273.15
+            temp_min = weather_data['main']['temp_min'] 
+            temp_max = weather_data['main']['temp_max'] 
+            pressure = weather_data['main']['pressure'] 
+            humidity = weather_data['main']['humidity'] 
+            visiblity = weather_data['visiblity'] 
+            wind_speed = weather_data['wind']['speed'] 
+            wind_deg = weather_data['wind']['deg'] 
+            cloud = weather_data['main']['temp'] 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+def get_weather_data(city,weather_api_key):
+   base_url = "http://api.openweathermap.org/data/2.5/weather?"
+   complete_url = base_url + "appid=" + weather_api_key + "&q=" + city
+   response = requests.get(complete_url)
+   st.write("API Response:", response.json())  # Debugging output
+   return response.json()    
+    
+
+
+    
+    
+    
+    
     
 if __name__ == "__main__":
     run_predictionpage() 
