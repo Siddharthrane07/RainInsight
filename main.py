@@ -1,5 +1,6 @@
 import streamlit as st
-from rain_prediction import run_predictionpage
+import folium
+# from rain_prediction import run_predictionpage
 from rain_forecast import run_weather_forecast
 from streamlit_option_menu import option_menu
 
@@ -25,7 +26,7 @@ def run_apps():
    if selected == "Weather Forecast":
        run_weather_forecast()
    elif selected == "Precipitation Predictions":
-           run_predictionpage()
+       run_predictionpage()
 
 
 run_apps()
