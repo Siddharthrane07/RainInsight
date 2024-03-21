@@ -1,3 +1,10 @@
 streamlit
 requests
 openai
+tensorflow
+folium
+sklearn
+numpy
+pandas
+pydeck
+jinja
